@@ -3,6 +3,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, Video, Palette, Box, Zap, Sun, Move, Layers, Monitor, Image, Home, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import setTalkshow from "@/assets/set-talkshow.jpg";
 import setLivestream from "@/assets/set-livestream.jpg";
 import setEvent from "@/assets/set-event.jpg";
@@ -37,6 +38,7 @@ const categories = [
     ],
     cta: "Xem thiết kế 2D",
     tags: ["Key Visual", "Backdrop", "POSM", "Social"],
+    link: "/thiet-ke-2d",
   },
   {
     id: "3d-models",
@@ -173,9 +175,15 @@ const CategoriesSection = () => {
                     {category.cta}
                     <ArrowRight className="w-5 h-5" />
                   </Button>
-                  <Button variant="outline" size="lg">
-                    Xem chi tiết
-                  </Button>
+                  {(category as any).link ? (
+                    <Button variant="outline" size="lg" asChild>
+                      <Link to={(category as any).link}>Xem chi tiết</Link>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" size="lg">
+                      Xem chi tiết
+                    </Button>
+                  )}
                 </div>
               </div>
             </motion.div>
