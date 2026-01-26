@@ -24,6 +24,7 @@ const categories = [
     ],
     cta: "Xem phim trường 3D",
     tags: ["Talkshow", "Livestream", "TV Show", "Event"],
+    link: "/phim-truong-3d",
   },
   {
     id: "2d-design",
