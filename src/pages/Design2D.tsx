@@ -252,9 +252,9 @@ const Design2D = () => {
                 </a>
               </Button>
               <Button variant="outline" size="xl" asChild>
-                <a href="mailto:loizc84@gmail.com">
+                <a href="mailto:designhomekey@gmail.com">
                   <Mail className="w-5 h-5" />
-                  loizc84@gmail.com
+                  designhomekey@gmail.com
                 </a>
               </Button>
             </div>
