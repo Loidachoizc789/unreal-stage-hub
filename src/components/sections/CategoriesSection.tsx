@@ -54,6 +54,7 @@ const categories = [
     ],
     cta: "Xem model 3D",
     tags: ["Props", "Nội thất", "Modular", "UE5"],
+    link: "/model-3d",
   },
   {
     id: "interior-design",
@@ -68,6 +69,7 @@ const categories = [
     ],
     cta: "Xem nội thất",
     tags: ["Căn hộ", "Biệt thự", "Văn phòng", "Showroom"],
+    link: "/noi-ngoai-that",
   },
   {
     id: "exterior-design",
@@ -82,6 +84,7 @@ const categories = [
     ],
     cta: "Xem ngoại thất",
     tags: ["Mặt tiền", "Sân vườn", "Khu đô thị", "Cảnh quan"],
+    link: "/noi-ngoai-that",
   },
 ];
 
