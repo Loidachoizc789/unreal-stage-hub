@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { ArrowRight, Video, Palette, Box, Zap, Sun, Move, Layers, Monitor, Image, Home, Building2, ChevronDown } from "lucide-react";
+import { ArrowRight, Video, Palette, Box, Zap, Sun, Move, Layers, Monitor, Image, Home, Building2, ChevronDown, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -77,6 +77,22 @@ const categories = [
       { label: "Nội Thất", description: "Căn hộ, biệt thự, văn phòng, showroom", icon: Home, tab: "interior" },
       { label: "Ngoại Thất", description: "Mặt tiền, sân vườn, khu đô thị", icon: Building2, tab: "exterior" },
     ],
+  },
+  {
+    id: "after-effects",
+    title: "After Effects / Motion Graphics",
+    description: "Motion logo, video quảng cáo, template AE, gói livestream visual, lower third & countdown",
+    icon: Film,
+    image: setTalkshow,
+    features: [
+      { icon: Zap, text: "Motion cơ bản & nâng cao" },
+      { icon: Layers, text: "Gói livestream đầy đủ" },
+      { icon: Monitor, text: "Video quảng cáo social" },
+      { icon: Move, text: "Template dễ chỉnh sửa" },
+    ],
+    cta: "Xem After Effects",
+    tags: ["Motion", "Livestream", "Video", "Template"],
+    link: "/after-effects",
   },
 ];
 

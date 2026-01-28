@@ -8,6 +8,10 @@ import Design2D from "./pages/Design2D";
 import Studio3D from "./pages/Studio3D";
 import Model3D from "./pages/Model3D";
 import InteriorExterior from "./pages/InteriorExterior";
+import AfterEffects from "./pages/AfterEffects";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminSetup from "./pages/AdminSetup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +28,12 @@ const App = () => (
           <Route path="/phim-truong-3d" element={<Studio3D />} />
           <Route path="/model-3d" element={<Model3D />} />
           <Route path="/noi-ngoai-that" element={<InteriorExterior />} />
+          <Route path="/after-effects" element={<AfterEffects />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/setup" element={<AdminSetup />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

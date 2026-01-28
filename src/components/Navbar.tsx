@@ -10,6 +10,9 @@ const navLinks = [{
   href: "#categories",
   label: "Danh mục"
 }, {
+  href: "#pricing",
+  label: "Bảng giá"
+}, {
   href: "#benefits",
   label: "Lợi ích"
 }, {

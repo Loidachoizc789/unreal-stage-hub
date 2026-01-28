@@ -10,12 +10,12 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-interface GalleryItem {
-  id: number;
+export interface GalleryItem {
+  id: number | string;
   title: string;
   description: string;
   image: string;
-  category: string;
+  category?: string;
 }
 
 interface ProductGalleryProps {
@@ -68,11 +68,13 @@ const ProductGallery = ({ items }: ProductGalleryProps) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 {/* Category Badge */}
-                <div className="absolute top-3 left-3">
-                  <span className="px-3 py-1 text-xs font-medium bg-primary/90 backdrop-blur-sm rounded-full text-primary-foreground">
-                    {item.category}
-                  </span>
-                </div>
+                {item.category && (
+                  <div className="absolute top-3 left-3">
+                    <span className="px-3 py-1 text-xs font-medium bg-primary/90 backdrop-blur-sm rounded-full text-primary-foreground">
+                      {item.category}
+                    </span>
+                  </div>
+                )}
 
                 {/* View Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -144,11 +146,13 @@ const ProductGallery = ({ items }: ProductGalleryProps) => {
                   </Button>
 
                   {/* Category Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-4 py-2 text-sm font-medium bg-primary rounded-full text-primary-foreground">
-                      {selectedItem.category}
-                    </span>
-                  </div>
+                  {selectedItem.category && (
+                    <div className="absolute top-4 left-4">
+                      <span className="px-4 py-2 text-sm font-medium bg-primary rounded-full text-primary-foreground">
+                        {selectedItem.category}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Counter */}
                   <div className="absolute bottom-4 right-4">
