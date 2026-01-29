@@ -1,58 +1,16 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Box, Layers, Move, Zap, Download, Settings, Palette, Monitor } from "lucide-react";
+import { ArrowLeft, Box, Layers, Move, Zap, Download, Settings, Palette, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ProductGallery from "@/components/ProductGallery";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
+import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setLivestream from "@/assets/set-livestream.jpg";
-import setTalkshow from "@/assets/set-talkshow.jpg";
-import setEvent from "@/assets/set-event.jpg";
-import setNews from "@/assets/set-news.jpg";
 
-const galleryItems = [
-  {
-    id: 1,
-    title: "Props Sân Khấu Hiện Đại",
-    description: "Bộ props sân khấu modular, dễ ráp nối cho các chương trình talkshow và event",
-    image: setLivestream,
-    category: "Props",
-  },
-  {
-    id: 2,
-    title: "Nội Thất Văn Phòng",
-    description: "Set nội thất văn phòng hiện đại, tối ưu polygon cho realtime render",
-    image: setTalkshow,
-    category: "Nội thất",
-  },
-  {
-    id: 3,
-    title: "Background Modular City",
-    description: "Hệ thống background thành phố modular, dễ customize theo yêu cầu",
-    image: setEvent,
-    category: "Background",
-  },
-  {
-    id: 4,
-    title: "Asset Thiên Nhiên",
-    description: "Cây cối, đá, địa hình - tối ưu cho outdoor scene",
-    image: setNews,
-    category: "Nature",
-  },
-  {
-    id: 5,
-    title: "Furniture Pack Premium",
-    description: "Bộ nội thất cao cấp với vật liệu PBR chất lượng cao",
-    image: setLivestream,
-    category: "Furniture",
-  },
-  {
-    id: 6,
-    title: "Lighting Props",
-    description: "Đèn trang trí, đèn sân khấu với IES profile chuẩn",
-    image: setTalkshow,
-    category: "Lighting",
-  },
+// Fallback images for when database is empty
+const fallbackImages = [
+  { id: 1, title: "Props Sân Khấu", description: "Bộ props sân khấu modular", image: setLivestream },
 ];
 
 const features = [
@@ -88,6 +46,9 @@ const specs = [
 ];
 
 const Model3D = () => {
+  const { images, isLoading } = useCategoryImages("model-3d");
+  const galleryItems = images.length > 0 ? images : fallbackImages;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -170,7 +131,13 @@ const Model3D = () => {
             </p>
           </motion.div>
 
-          <ProductGallery items={galleryItems} />
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <ProductGallery items={galleryItems} />
+          )}
         </div>
       </section>
 
