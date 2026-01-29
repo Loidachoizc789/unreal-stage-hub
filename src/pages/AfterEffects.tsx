@@ -1,30 +1,17 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Film, Play, Sparkles, Video, Tv, Zap, Clock, Layers, Download } from "lucide-react";
+import { ArrowLeft, Film, Play, Sparkles, Video, Tv, Zap, Clock, Layers, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
 import ProductGallery from "@/components/ProductGallery";
+import { useCategoryImages } from "@/hooks/useCategoryImages";
 
-// Static placeholder images - will be replaced by database images
-const motionItems = [
-  { id: 1, title: "Logo Intro Animation", image: "/placeholder.svg", description: "Logo reveal 5-7s với hiệu ứng particles" },
-  { id: 2, title: "Outro Bumper", image: "/placeholder.svg", description: "Kết thúc video chuyên nghiệp" },
-  { id: 3, title: "Text Animation", image: "/placeholder.svg", description: "Typography motion đơn giản" },
-];
-
-const livestreamItems = [
-  { id: 1, title: "Lower Third Pack", image: "/placeholder.svg", description: "Gói lower third đa dạng mẫu" },
-  { id: 2, title: "Livestream Frame", image: "/placeholder.svg", description: "Khung livestream với overlay" },
-  { id: 3, title: "Countdown Timer", image: "/placeholder.svg", description: "Đếm ngược intro livestream" },
-];
-
-const videoItems = [
-  { id: 1, title: "Social Video 15s", image: "/placeholder.svg", description: "Video quảng cáo ngắn cho social" },
-  { id: 2, title: "Promo Video 30s", image: "/placeholder.svg", description: "Video giới thiệu sản phẩm" },
-  { id: 3, title: "Template AE Brand", image: "/placeholder.svg", description: "Template chỉnh sửa theo brand" },
+// Fallback images
+const fallbackItems = [
+  { id: 1, title: "Motion Graphics", image: "/placeholder.svg", description: "Logo reveal và hiệu ứng" },
 ];
 
 const features = [
@@ -45,6 +32,8 @@ const deliverables = [
 
 const AfterEffects = () => {
   const [activeTab, setActiveTab] = useState("motion");
+  const { images, isLoading } = useCategoryImages("after-effects");
+  const galleryItems = images.length > 0 ? images : fallbackItems;
 
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -136,10 +125,16 @@ const AfterEffects = () => {
                 transition={{ duration: 0.4 }}
               >
                 <div className="text-center mb-8">
-                  <h2 className="font-display text-2xl font-bold mb-2">Motion Cơ Bản</h2>
-                  <p className="text-muted-foreground">Logo intro, outro, bumper & text animation</p>
+                  <h2 className="font-display text-2xl font-bold mb-2">Motion Graphics</h2>
+                  <p className="text-muted-foreground">Logo intro, outro, bumper, video quảng cáo & livestream visual</p>
                 </div>
-                <ProductGallery items={motionItems} />
+                {isLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <ProductGallery items={galleryItems} />
+                )}
               </motion.div>
             </TabsContent>
 
@@ -153,7 +148,13 @@ const AfterEffects = () => {
                   <h2 className="font-display text-2xl font-bold mb-2">Gói Livestream</h2>
                   <p className="text-muted-foreground">Lower third, frame, countdown & overlay</p>
                 </div>
-                <ProductGallery items={livestreamItems} />
+                {isLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <ProductGallery items={galleryItems} />
+                )}
               </motion.div>
             </TabsContent>
 
@@ -167,7 +168,13 @@ const AfterEffects = () => {
                   <h2 className="font-display text-2xl font-bold mb-2">Video Quảng Cáo</h2>
                   <p className="text-muted-foreground">Motion video & template AE</p>
                 </div>
-                <ProductGallery items={videoItems} />
+                {isLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <ProductGallery items={galleryItems} />
+                )}
               </motion.div>
             </TabsContent>
           </Tabs>

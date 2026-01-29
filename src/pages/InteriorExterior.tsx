@@ -1,104 +1,21 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Home, Building2, Sun, Layers, Monitor, Move, Zap, Download } from "lucide-react";
+import { ArrowLeft, Home, Building2, Sun, Layers, Monitor, Move, Zap, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductGallery from "@/components/ProductGallery";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
-import setLivestream from "@/assets/set-livestream.jpg";
-import setTalkshow from "@/assets/set-talkshow.jpg";
-import setEvent from "@/assets/set-event.jpg";
+import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setNews from "@/assets/set-news.jpg";
 
-const interiorItems = [
-  {
-    id: 1,
-    title: "Căn Hộ Hiện Đại",
-    description: "Render 3D phòng khách căn hộ cao cấp với ánh sáng tự nhiên",
-    image: setNews,
-    category: "Căn hộ",
-  },
-  {
-    id: 2,
-    title: "Văn Phòng Startup",
-    description: "Thiết kế không gian làm việc mở, sáng tạo cho startup công nghệ",
-    image: setTalkshow,
-    category: "Văn phòng",
-  },
-  {
-    id: 3,
-    title: "Showroom Nội Thất",
-    description: "Không gian trưng bày sản phẩm nội thất cao cấp",
-    image: setLivestream,
-    category: "Showroom",
-  },
-  {
-    id: 4,
-    title: "Biệt Thự Luxury",
-    description: "Render nội thất biệt thự phong cách Indochine",
-    image: setEvent,
-    category: "Biệt thự",
-  },
-  {
-    id: 5,
-    title: "Phòng Ngủ Master",
-    description: "Thiết kế phòng ngủ master với tone màu ấm áp",
-    image: setNews,
-    category: "Phòng ngủ",
-  },
-  {
-    id: 6,
-    title: "Kitchen Modern",
-    description: "Nhà bếp hiện đại với island và tủ bếp âm tường",
-    image: setTalkshow,
-    category: "Nhà bếp",
-  },
+// Fallback images for when database is empty
+const fallbackInteriorImages = [
+  { id: 1, title: "Căn Hộ Hiện Đại", description: "Render 3D phòng khách căn hộ cao cấp", image: setNews },
 ];
 
-const exteriorItems = [
-  {
-    id: 1,
-    title: "Mặt Tiền Biệt Thự",
-    description: "Phối cảnh mặt tiền biệt thự 3 tầng phong cách hiện đại",
-    image: setTalkshow,
-    category: "Biệt thự",
-  },
-  {
-    id: 2,
-    title: "Khu Đô Thị Xanh",
-    description: "Phối cảnh tổng thể khu đô thị với cảnh quan xanh",
-    image: setEvent,
-    category: "Khu đô thị",
-  },
-  {
-    id: 3,
-    title: "Sân Vườn Villa",
-    description: "Thiết kế cảnh quan sân vườn villa nghỉ dưỡng",
-    image: setLivestream,
-    category: "Sân vườn",
-  },
-  {
-    id: 4,
-    title: "Nhà Phố 4 Tầng",
-    description: "Render mặt tiền nhà phố kết hợp kinh doanh",
-    image: setNews,
-    category: "Nhà phố",
-  },
-  {
-    id: 5,
-    title: "Resort Bể Bơi",
-    description: "Phối cảnh khu resort với bể bơi vô cực",
-    image: setTalkshow,
-    category: "Resort",
-  },
-  {
-    id: 6,
-    title: "Công Trình Công Cộng",
-    description: "Render ngoại thất tòa nhà văn phòng hiện đại",
-    image: setEvent,
-    category: "Văn phòng",
-  },
+const fallbackExteriorImages = [
+  { id: 1, title: "Mặt Tiền Biệt Thự", description: "Phối cảnh mặt tiền biệt thự 3 tầng", image: setNews },
 ];
 
 const interiorFeatures = [
@@ -159,6 +76,12 @@ const specs = [
 const InteriorExterior = () => {
   const [searchParams] = useSearchParams();
   const defaultTab = searchParams.get("tab") === "exterior" ? "exterior" : "interior";
+  
+  const { images: interiorImages, isLoading: interiorLoading } = useCategoryImages("noi-that");
+  const { images: exteriorImages, isLoading: exteriorLoading } = useCategoryImages("ngoai-that");
+  
+  const interiorItems = interiorImages.length > 0 ? interiorImages : fallbackInteriorImages;
+  const exteriorItems = exteriorImages.length > 0 ? exteriorImages : fallbackExteriorImages;
 
   return (
     <div className="min-h-screen bg-background">
@@ -253,7 +176,13 @@ const InteriorExterior = () => {
                 </p>
               </motion.div>
 
-              <ProductGallery items={interiorItems} />
+              {interiorLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <ProductGallery items={interiorItems} />
+              )}
             </TabsContent>
 
             <TabsContent value="exterior">
@@ -292,7 +221,13 @@ const InteriorExterior = () => {
                 </p>
               </motion.div>
 
-              <ProductGallery items={exteriorItems} />
+              {exteriorLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <ProductGallery items={exteriorItems} />
+              )}
             </TabsContent>
           </Tabs>
         </div>

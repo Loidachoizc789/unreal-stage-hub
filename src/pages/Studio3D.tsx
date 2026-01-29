@@ -1,56 +1,14 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Video, Zap, Monitor, Sun, Move, Phone, Mail, CheckCircle, Play } from "lucide-react";
+import { ArrowLeft, Video, Zap, Monitor, Sun, Move, Phone, Mail, CheckCircle, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ProductGallery from "@/components/ProductGallery";
+import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setTalkshow from "@/assets/set-talkshow.jpg";
-import setLivestream from "@/assets/set-livestream.jpg";
-import setEvent from "@/assets/set-event.jpg";
-import setNews from "@/assets/set-news.jpg";
 
-const studioSamples = [
-  {
-    id: 1,
-    title: "Set Talkshow Doanh Nghiệp",
-    description: "Phim trường 3D cho chương trình talkshow nội bộ và đối ngoại. Thiết kế hiện đại, chuyên nghiệp với bàn host, ghế khách mời và backdrop LED ảo. Dễ dàng thay đổi logo, màu sắc theo brand.",
-    image: setTalkshow,
-    category: "Talkshow",
-  },
-  {
-    id: 2,
-    title: "Studio Livestream Bán Hàng",
-    description: "Phim trường tối ưu cho livestream bán hàng với không gian trưng bày sản phẩm, bàn demo và background động. Hỗ trợ camera tracking, realtime render trên UE5/Aximmetry.",
-    image: setLivestream,
-    category: "Livestream",
-  },
-  {
-    id: 3,
-    title: "Sân Khấu Sự Kiện Ảo",
-    description: "Sân khấu virtual production cho sự kiện online/hybrid. Màn LED ảo 360°, hiệu ứng ánh sáng động, hỗ trợ nhiều góc camera. Phù hợp cho event ra mắt sản phẩm, lễ kỷ niệm, awards.",
-    image: setEvent,
-    category: "Event",
-  },
-  {
-    id: 4,
-    title: "Set Tin Tức / News Studio",
-    description: "Phim trường tin tức chuyên nghiệp với bàn anchor, màn hình phụ, ticker chạy chữ. Thiết kế chuẩn broadcast, tối ưu cho quay dựng chương trình thời sự, bản tin nội bộ.",
-    image: setNews,
-    category: "News",
-  },
-  {
-    id: 5,
-    title: "Showroom Ảo 3D",
-    description: "Không gian showroom ảo cho trưng bày sản phẩm công nghệ, ô tô, bất động sản. Khách hàng có thể đi walkthrough trong không gian 3D, xem chi tiết sản phẩm từ mọi góc độ.",
-    image: setTalkshow,
-    category: "Showroom",
-  },
-  {
-    id: 6,
-    title: "TV Show Entertainment",
-    description: "Phim trường cho chương trình giải trí, gameshow với thiết kế màu sắc, năng động. Hỗ trợ hiệu ứng đặc biệt, LED wall động, tương tác realtime với người chơi.",
-    image: setLivestream,
-    category: "TV Show",
-  },
+// Fallback images for when database is empty
+const fallbackImages = [
+  { id: 1, title: "Set Talkshow", description: "Phim trường 3D cho chương trình talkshow", image: setTalkshow },
 ];
 
 const deliverables = [
@@ -81,6 +39,9 @@ const specs = [
 ];
 
 const Studio3D = () => {
+  const { images, isLoading } = useCategoryImages("phim-truong-3d");
+  const galleryItems = images.length > 0 ? images : fallbackImages;
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
@@ -180,7 +141,13 @@ const Studio3D = () => {
             </p>
           </motion.div>
 
-          <ProductGallery items={studioSamples} />
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <ProductGallery items={galleryItems} />
+          )}
         </div>
       </section>
 

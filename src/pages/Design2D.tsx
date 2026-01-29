@@ -1,56 +1,14 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Palette, Layers, Image, Zap, Phone, Mail, CheckCircle } from "lucide-react";
+import { ArrowLeft, Palette, Layers, Image, Zap, Phone, Mail, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ProductGallery from "@/components/ProductGallery";
+import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setEvent from "@/assets/set-event.jpg";
-import setTalkshow from "@/assets/set-talkshow.jpg";
-import setLivestream from "@/assets/set-livestream.jpg";
-import setNews from "@/assets/set-news.jpg";
 
-const designSamples = [
-  {
-    id: 1,
-    title: "Key Visual Sự Kiện Ra Mắt Sản Phẩm",
-    description: "Thiết kế key visual cho sự kiện ra mắt sản phẩm công nghệ với phong cách hiện đại, tối giản. Bao gồm backdrop chính, banner LED và các ấn phẩm truyền thông.",
-    image: setEvent,
-    category: "Key Visual",
-  },
-  {
-    id: 2,
-    title: "Backdrop Talkshow Doanh Nghiệp",
-    description: "Backdrop 3D render cho chương trình talkshow nội bộ doanh nghiệp. Thiết kế đồng bộ với bộ nhận diện thương hiệu, tối ưu cho quay dựng studio.",
-    image: setTalkshow,
-    category: "Backdrop",
-  },
-  {
-    id: 3,
-    title: "Visual Livestream Bán Hàng",
-    description: "Bộ visual hoàn chỉnh cho kênh livestream bán hàng: khung hình, lower third, overlay sản phẩm, hiệu ứng chuyển cảnh. Dễ tích hợp OBS/vMix.",
-    image: setLivestream,
-    category: "Livestream",
-  },
-  {
-    id: 4,
-    title: "Layout Màn LED Sự Kiện",
-    description: "Thiết kế layout nội dung cho màn LED sự kiện outdoor quy mô lớn. Tối ưu độ phân giải, màu sắc hiển thị ngoài trời, có motion graphic đi kèm.",
-    image: setNews,
-    category: "LED Layout",
-  },
-  {
-    id: 5,
-    title: "POSM & Social Visual",
-    description: "Bộ ấn phẩm POSM và visual cho social media: poster, standee, banner Facebook/Instagram, story template. Đồng bộ concept với key visual chính.",
-    image: setEvent,
-    category: "POSM",
-  },
-  {
-    id: 6,
-    title: "Visual Chương Trình TV Show",
-    description: "Thiết kế bộ visual cho chương trình TV show: logo show, khung hình, lower third, bumper, end card. Phong cách năng động, thu hút.",
-    image: setTalkshow,
-    category: "TV Show",
-  },
+// Fallback images for when database is empty
+const fallbackImages = [
+  { id: 1, title: "Key Visual Sự Kiện", description: "Thiết kế key visual cho sự kiện", image: setEvent },
 ];
 
 const deliverables = [
@@ -72,6 +30,9 @@ const features = [
 ];
 
 const Design2D = () => {
+  const { images, isLoading } = useCategoryImages("thiet-ke-2d");
+  const galleryItems = images.length > 0 ? images : fallbackImages;
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
@@ -168,7 +129,13 @@ const Design2D = () => {
             </p>
           </motion.div>
 
-          <ProductGallery items={designSamples} />
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <ProductGallery items={galleryItems} />
+          )}
         </div>
       </section>
 
