@@ -3,9 +3,32 @@ import { Box, Layers, Move, Zap, Download, Settings, Palette, Monitor, Loader2 }
 import { Button } from "@/components/ui/button";
 import ProductGallery from "@/components/ProductGallery";
 import CategoryNavbar from "@/components/CategoryNavbar";
+import CategoryPricing from "@/components/CategoryPricing";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setLivestream from "@/assets/set-livestream.jpg";
+
+const pricingData = {
+  services: [
+    {
+      name: "Asset đơn",
+      items: [
+        { label: "Props đơn giản", price: "300k – 700k" },
+        { label: "Props chi tiết", price: "800k – 2 triệu" },
+        { label: "Asset clean topology (dùng animation)", price: "2 – 4 triệu" },
+      ],
+    },
+    {
+      name: "Không gian 3D",
+      items: [
+        { label: "Phòng / set nhỏ", price: "2 – 4 triệu" },
+        { label: "Studio / booth", price: "4 – 8 triệu" },
+        { label: "Background modular (nhiều module)", price: "6 – 10 triệu" },
+      ],
+    },
+  ],
+  includes: ["Giao file: Blender / FBX / UE"],
+};
 
 // Fallback images for when database is empty
 const fallbackImages = [
@@ -234,6 +257,9 @@ const Model3D = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <CategoryPricing services={pricingData.services} includes={pricingData.includes} />
 
       <Footer />
     </div>
