@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Upload, Trash2, Edit, Plus, Image, Loader2, ArrowLeft, Images } from "lucide-react";
+import { LogOut, Upload, Trash2, Edit, Plus, Image, Loader2, ArrowLeft, Images, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import ProductMediaManager from "@/components/admin/ProductMediaManager";
+import PricingManager from "@/components/admin/PricingManager";
 
 interface CategoryImage {
   id: string;
@@ -39,6 +40,7 @@ const AdminDashboard = () => {
   const [editingImage, setEditingImage] = useState<CategoryImage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [mediaManagerProductId, setMediaManagerProductId] = useState<string | null>(null);
+  const [pricingCategory, setPricingCategory] = useState<{ slug: string; name: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -260,6 +262,31 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Category Pricing Management */}
+        <Card className="mb-8">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-primary" />
+              Quản lý Bảng Giá theo Danh Mục
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {categories.map((cat) => (
+                <Button
+                  key={cat.slug}
+                  variant="outline"
+                  className="justify-start gap-2"
+                  onClick={() => setPricingCategory({ slug: cat.slug, name: cat.name })}
+                >
+                  <DollarSign className="w-4 h-4" />
+                  {cat.name}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -426,6 +453,15 @@ const AdminDashboard = () => {
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Pricing Manager */}
+        {pricingCategory && (
+          <PricingManager
+            categorySlug={pricingCategory.slug}
+            categoryName={pricingCategory.name}
+            onClose={() => setPricingCategory(null)}
+          />
+        )}
       </div>
     </main>
   );

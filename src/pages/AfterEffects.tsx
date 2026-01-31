@@ -233,7 +233,10 @@ const AfterEffects = () => {
       </section>
 
       {/* Pricing Section */}
-      <CategoryPricing services={pricingData.services} />
+      <CategoryPricing 
+        categorySlug="after-effects"
+        fallbackServices={pricingData.services} 
+      />
 
       {/* CTA */}
       <section className="py-16">

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Check, MessageCircle } from "lucide-react";
+import { Check, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCategoryPricing } from "@/hooks/useCategoryPricing";
 
 interface PriceItem {
   label: string;
@@ -14,9 +15,10 @@ interface ServiceGroup {
 }
 
 interface CategoryPricingProps {
-  services: ServiceGroup[];
-  includes?: string[];
-  excludes?: string[];
+  categorySlug: string;
+  fallbackServices?: ServiceGroup[];
+  fallbackIncludes?: string[];
+  fallbackExcludes?: string[];
 }
 
 const generalTerms = [
@@ -26,7 +28,19 @@ const generalTerms = [
   { label: "Deadline gấp", value: "+20–30%" },
 ];
 
-const CategoryPricing = ({ services, includes, excludes }: CategoryPricingProps) => {
+const CategoryPricing = ({ categorySlug, fallbackServices = [], fallbackIncludes, fallbackExcludes }: CategoryPricingProps) => {
+  const { pricingData, isLoading } = useCategoryPricing(categorySlug);
+
+  // Use database data if available, otherwise use fallback
+  const services = pricingData?.services || fallbackServices;
+  const includes = pricingData?.includes || fallbackIncludes;
+  const excludes = pricingData?.excludes || fallbackExcludes;
+
+  // Don't render if no pricing data
+  if (!isLoading && services.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 bg-card/50">
       <div className="section-container">
@@ -45,84 +59,92 @@ const CategoryPricing = ({ services, includes, excludes }: CategoryPricingProps)
           </p>
         </motion.div>
 
-        {/* Pricing Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          {services.map((service, index) => (
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
+            {/* Pricing Grid */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+              {services.map((service, index) => (
+                <motion.div
+                  key={service.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="h-full border-border/50 hover:border-primary/30 transition-colors">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg text-primary">{service.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {service.items.map((item) => (
+                          <li key={item.label} className="flex justify-between text-sm gap-2 pb-2 border-b border-border/50 last:border-0">
+                            <span className="text-muted-foreground">{item.label}</span>
+                            <span className="font-semibold text-foreground whitespace-nowrap">{item.price}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Includes/Excludes */}
+            {(includes && includes.length > 0) || (excludes && excludes.length > 0) ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="flex flex-wrap gap-4 justify-center mb-8"
+              >
+                {includes?.map((item) => (
+                  <span key={item} className="flex items-center gap-2 text-sm text-primary bg-primary/10 px-4 py-2 rounded-full">
+                    <Check className="w-4 h-4" /> {item}
+                  </span>
+                ))}
+                {excludes?.map((item) => (
+                  <span key={item} className="text-sm text-muted-foreground bg-muted px-4 py-2 rounded-full">
+                    ❌ {item}
+                  </span>
+                ))}
+              </motion.div>
+            ) : null}
+
+            {/* General Terms */}
             <motion.div
-              key={service.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="glass-card p-6"
             >
-              <Card className="h-full border-border/50 hover:border-primary/30 transition-colors">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg text-primary">{service.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {service.items.map((item) => (
-                      <li key={item.label} className="flex justify-between text-sm gap-2 pb-2 border-b border-border/50 last:border-0">
-                        <span className="text-muted-foreground">{item.label}</span>
-                        <span className="font-semibold text-foreground whitespace-nowrap">{item.price}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Includes/Excludes */}
-        {(includes || excludes) && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap gap-4 justify-center mb-8"
-          >
-            {includes?.map((item) => (
-              <span key={item} className="flex items-center gap-2 text-sm text-primary bg-primary/10 px-4 py-2 rounded-full">
-                <Check className="w-4 h-4" /> {item}
-              </span>
-            ))}
-            {excludes?.map((item) => (
-              <span key={item} className="text-sm text-muted-foreground bg-muted px-4 py-2 rounded-full">
-                ❌ {item}
-              </span>
-            ))}
-          </motion.div>
-        )}
-
-        {/* General Terms */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="glass-card p-6"
-        >
-          <h3 className="font-semibold mb-4 text-center">Quy Định Chung</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {generalTerms.map((term) => (
-              <div key={term.label} className="text-center p-3 rounded-lg bg-card/50 border border-border">
-                <p className="text-xs text-muted-foreground mb-1">{term.label}</p>
-                <p className="font-semibold text-primary text-sm">{term.value}</p>
+              <h3 className="font-semibold mb-4 text-center">Quy Định Chung</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {generalTerms.map((term) => (
+                  <div key={term.label} className="text-center p-3 rounded-lg bg-card/50 border border-border">
+                    <p className="text-xs text-muted-foreground mb-1">{term.label}</p>
+                    <p className="font-semibold text-primary text-sm">{term.value}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          
-          <div className="text-center">
-            <Button variant="hero" size="lg" className="gap-2" asChild>
-              <a href="#contact">
-                <MessageCircle className="w-5 h-5" />
-                Nhận báo giá chi tiết
-              </a>
-            </Button>
-          </div>
-        </motion.div>
+              
+              <div className="text-center">
+                <Button variant="hero" size="lg" className="gap-2" asChild>
+                  <a href="#contact">
+                    <MessageCircle className="w-5 h-5" />
+                    Nhận báo giá chi tiết
+                  </a>
+                </Button>
+              </div>
+            </motion.div>
+          </>
+        )}
       </div>
     </section>
   );
