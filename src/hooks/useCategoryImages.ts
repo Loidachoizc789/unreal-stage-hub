@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { GalleryItem } from "@/components/ProductGallery";
 
@@ -16,33 +16,40 @@ export function useCategoryImages(categorySlug: string) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchImages = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("category_images")
-        .select("*")
-        .eq("category_slug", categorySlug)
-        .order("display_order");
-
-      if (error) throw error;
-
-      const galleryItems: GalleryItem[] = (data || []).map((img: CategoryImage) => ({
-        id: img.id,
-        title: img.title,
-        description: img.description || "",
-        image: img.image_url,
-      }));
-
-      setImages(galleryItems);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to fetch images"));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [categorySlug]);
-
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchImages = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("category_images")
+          .select("*")
+          .eq("category_slug", categorySlug)
+          .order("display_order");
+
+        if (error) throw error;
+
+        if (isMounted) {
+          const galleryItems: GalleryItem[] = (data || []).map((img: CategoryImage) => ({
+            id: img.id,
+            title: img.title,
+            description: img.description || "",
+            image: img.image_url,
+          }));
+          setImages(galleryItems);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err : new Error("Failed to fetch images"));
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
     fetchImages();
 
     // Subscribe to real-time changes
@@ -64,11 +71,12 @@ export function useCategoryImages(categorySlug: string) {
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
-  }, [categorySlug, fetchImages]);
+  }, [categorySlug]);
 
-  return { images, isLoading, error, refetch: fetchImages };
+  return { images, isLoading, error };
 }
 
 // Hook to fetch all images grouped by category
@@ -76,38 +84,43 @@ export function useAllCategoryImages() {
   const [imagesByCategory, setImagesByCategory] = useState<Record<string, GalleryItem[]>>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchAllImages = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("category_images")
-        .select("*")
-        .order("display_order");
-
-      if (error) throw error;
-
-      const grouped: Record<string, GalleryItem[]> = {};
-      (data || []).forEach((img: CategoryImage) => {
-        if (!grouped[img.category_slug]) {
-          grouped[img.category_slug] = [];
-        }
-        grouped[img.category_slug].push({
-          id: img.id,
-          title: img.title,
-          description: img.description || "",
-          image: img.image_url,
-        });
-      });
-
-      setImagesByCategory(grouped);
-    } catch (err) {
-      console.error("Failed to fetch category images:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchAllImages = async () => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("category_images")
+          .select("*")
+          .order("display_order");
+
+        if (error) throw error;
+
+        if (isMounted) {
+          const grouped: Record<string, GalleryItem[]> = {};
+          (data || []).forEach((img: CategoryImage) => {
+            if (!grouped[img.category_slug]) {
+              grouped[img.category_slug] = [];
+            }
+            grouped[img.category_slug].push({
+              id: img.id,
+              title: img.title,
+              description: img.description || "",
+              image: img.image_url,
+            });
+          });
+          setImagesByCategory(grouped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch category images:", err);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
     fetchAllImages();
 
     // Subscribe to real-time changes for all categories
@@ -127,9 +140,10 @@ export function useAllCategoryImages() {
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
-  }, [fetchAllImages]);
+  }, []);
 
-  return { imagesByCategory, isLoading, refetch: fetchAllImages };
+  return { imagesByCategory, isLoading };
 }
