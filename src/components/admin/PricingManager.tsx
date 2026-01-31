@@ -252,7 +252,7 @@ const PricingManager = ({
       <div className="bg-background rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-base">Quản lý bảng giá: {categoryName}</h2>
+            <h2 className="font-bold text-lg">Quản lý bảng giá: {categoryName}</h2>
             {hasUnsavedChanges && <span className="text-sm text-primary">• Có thay đổi chưa lưu</span>}
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
