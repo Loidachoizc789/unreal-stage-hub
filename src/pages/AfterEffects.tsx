@@ -4,9 +4,39 @@ import { Film, Play, Sparkles, Video, Tv, Zap, Clock, Layers, Download, Loader2 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CategoryNavbar from "@/components/CategoryNavbar";
+import CategoryPricing from "@/components/CategoryPricing";
 import Footer from "@/components/sections/Footer";
 import ProductGallery from "@/components/ProductGallery";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
+
+const pricingData = {
+  services: [
+    {
+      name: "Motion cơ bản",
+      items: [
+        { label: "Logo intro 5–7s", price: "500k – 1.200k" },
+        { label: "Outro / bumper", price: "400k – 800k" },
+        { label: "Text animation đơn", price: "200k – 400k" },
+      ],
+    },
+    {
+      name: "Livestream / Video",
+      items: [
+        { label: "Lower Third (1 mẫu)", price: "300k – 600k" },
+        { label: "Gói livestream (frame + lower third + logo)", price: "1.5 – 3 triệu" },
+        { label: "Countdown / intro livestream", price: "800k – 1.5 triệu" },
+      ],
+    },
+    {
+      name: "Video quảng cáo / social",
+      items: [
+        { label: "Motion video 10–15s", price: "1.5 – 3 triệu" },
+        { label: "Motion video 20–30s", price: "3 – 6 triệu" },
+        { label: "Template AE chỉnh sửa theo brand", price: "2 – 4 triệu" },
+      ],
+    },
+  ],
+};
 
 // Fallback images
 const fallbackItems = [
@@ -201,6 +231,9 @@ const AfterEffects = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <CategoryPricing services={pricingData.services} />
 
       {/* CTA */}
       <section className="py-16">

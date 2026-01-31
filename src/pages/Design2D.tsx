@@ -3,9 +3,31 @@ import { Palette, Layers, Image, Zap, Phone, Mail, CheckCircle, Loader2 } from "
 import { Button } from "@/components/ui/button";
 import ProductGallery from "@/components/ProductGallery";
 import CategoryNavbar from "@/components/CategoryNavbar";
+import CategoryPricing from "@/components/CategoryPricing";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setEvent from "@/assets/set-event.jpg";
+
+const pricingData = {
+  services: [
+    {
+      name: "Thiết kế đơn lẻ",
+      items: [
+        { label: "Banner / KV đơn", price: "200k – 500k" },
+        { label: "Poster sự kiện", price: "800k – 1.500k" },
+        { label: "Backdrop sân khấu", price: "1 – 2 triệu" },
+      ],
+    },
+    {
+      name: "Gói 2D",
+      items: [
+        { label: "Bộ livestream (frame + lower third)", price: "1.5 – 3 triệu" },
+        { label: "Bộ sự kiện (KV + banner + backdrop)", price: "3 – 6 triệu" },
+        { label: "Hồ sơ trình bày (10–15 trang)", price: "2.5 – 5 triệu" },
+      ],
+    },
+  ],
+};
 
 // Fallback images for when database is empty
 const fallbackImages = [
@@ -189,6 +211,9 @@ const Design2D = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <CategoryPricing services={pricingData.services} />
 
       {/* Contact CTA Section */}
       <section id="contact" className="py-24">

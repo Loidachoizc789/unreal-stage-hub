@@ -5,9 +5,38 @@ import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductGallery from "@/components/ProductGallery";
 import CategoryNavbar from "@/components/CategoryNavbar";
+import CategoryPricing from "@/components/CategoryPricing";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setNews from "@/assets/set-news.jpg";
+
+const pricingData = {
+  services: [
+    {
+      name: "Nội thất (ảnh tĩnh)",
+      items: [
+        { label: "1 view", price: "700k – 1.200k" },
+        { label: "4 view", price: "3 – 5 triệu" },
+        { label: "6 view", price: "5 – 8 triệu" },
+      ],
+    },
+    {
+      name: "Ngoại thất",
+      items: [
+        { label: "Nhà phố", price: "3 – 6 triệu" },
+        { label: "Biệt thự nhỏ", price: "6 – 12 triệu" },
+        { label: "Phối cảnh dự án nhỏ", price: "12 – 25 triệu" },
+      ],
+    },
+    {
+      name: "Animation nội thất",
+      items: [
+        { label: "10–15s", price: "3 – 6 triệu" },
+        { label: "20–30s", price: "6 – 12 triệu" },
+      ],
+    },
+  ],
+};
 
 // Fallback images for when database is empty
 const fallbackInteriorImages = [
@@ -327,6 +356,9 @@ const InteriorExterior = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <CategoryPricing services={pricingData.services} />
 
       <Footer />
     </div>

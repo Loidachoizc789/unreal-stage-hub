@@ -3,9 +3,33 @@ import { Video, Zap, Monitor, Sun, Move, Phone, Mail, CheckCircle, Play, Loader2
 import { Button } from "@/components/ui/button";
 import ProductGallery from "@/components/ProductGallery";
 import CategoryNavbar from "@/components/CategoryNavbar";
+import CategoryPricing from "@/components/CategoryPricing";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setTalkshow from "@/assets/set-talkshow.jpg";
+
+const pricingData = {
+  services: [
+    {
+      name: "Scene 3D – Không gian ảo",
+      items: [
+        { label: "Scene đơn giản (talkshow / livestream)", price: "3 – 5 triệu" },
+        { label: "Scene chi tiết (TV show / event nhỏ)", price: "5 – 8 triệu" },
+        { label: "Scene phức tạp (nhiều màn LED, ánh sáng)", price: "8 – 15 triệu" },
+      ],
+    },
+    {
+      name: "Gói phim trường",
+      items: [
+        { label: "1 scene + 5–7 ảnh render", price: "5 – 8 triệu" },
+        { label: "1 scene + animation camera 10–15s", price: "8 – 12 triệu" },
+        { label: "2–3 scene + setup đồng bộ", price: "12 – 20 triệu" },
+      ],
+    },
+  ],
+  includes: ["Model + lighting + render"],
+  excludes: ["Không bao gồm nhân vật diễn xuất phức tạp"],
+};
 
 // Fallback images for when database is empty
 const fallbackImages = [
@@ -235,6 +259,13 @@ const Studio3D = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <CategoryPricing 
+        services={pricingData.services} 
+        includes={pricingData.includes} 
+        excludes={pricingData.excludes} 
+      />
 
       {/* Contact CTA Section */}
       <section id="contact" className="py-24 bg-card/50">
