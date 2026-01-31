@@ -77,6 +77,44 @@ export type Database = {
         }
         Relationships: []
       }
+      product_media: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          media_type: string
+          media_url: string
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          media_type?: string
+          media_url: string
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          media_type?: string
+          media_url?: string
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "category_images"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

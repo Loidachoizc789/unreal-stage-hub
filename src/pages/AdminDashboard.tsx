@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Upload, Trash2, Edit, Plus, Image, Loader2, ArrowLeft } from "lucide-react";
+import { LogOut, Upload, Trash2, Edit, Plus, Image, Loader2, ArrowLeft, Images } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import ProductMediaManager from "@/components/admin/ProductMediaManager";
 
 interface CategoryImage {
   id: string;
@@ -37,6 +38,7 @@ const AdminDashboard = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [editingImage, setEditingImage] = useState<CategoryImage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [mediaManagerProductId, setMediaManagerProductId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -375,10 +377,13 @@ const AdminDashboard = () => {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <Button size="sm" variant="secondary" onClick={() => handleEdit(image)}>
+                    <Button size="sm" variant="secondary" onClick={() => setMediaManagerProductId(image.id)} title="Quản lý media">
+                      <Images className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleEdit(image)} title="Chỉnh sửa">
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(image)}>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(image)} title="Xóa">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -406,6 +411,21 @@ const AdminDashboard = () => {
             <p className="text-muted-foreground">Bấm "Thêm ảnh mới" để bắt đầu.</p>
           </div>
         )}
+
+        {/* Media Manager Dialog */}
+        <Dialog open={mediaManagerProductId !== null} onOpenChange={() => setMediaManagerProductId(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Quản lý Ảnh/Video</DialogTitle>
+            </DialogHeader>
+            {mediaManagerProductId && (
+              <ProductMediaManager
+                productId={mediaManagerProductId}
+                onClose={() => setMediaManagerProductId(null)}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
