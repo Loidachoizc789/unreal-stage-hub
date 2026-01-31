@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Box, Layers, Move, Zap, Download, Settings, Palette, Monitor, Loader2 } from "lucide-react";
+import { Box, Layers, Move, Zap, Download, Settings, Palette, Monitor, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import ProductGallery from "@/components/ProductGallery";
-import Navbar from "@/components/Navbar";
+import CategoryNavbar from "@/components/CategoryNavbar";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setLivestream from "@/assets/set-livestream.jpg";
@@ -51,7 +50,7 @@ const Model3D = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <CategoryNavbar />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 relative overflow-hidden">
@@ -59,12 +58,6 @@ const Model3D = () => {
         <div className="absolute inset-0 grid-pattern opacity-5" />
 
         <div className="section-container relative z-10">
-          <Button variant="ghost" asChild className="mb-8">
-            <Link to="/" className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Về trang chủ
-            </Link>
-          </Button>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}

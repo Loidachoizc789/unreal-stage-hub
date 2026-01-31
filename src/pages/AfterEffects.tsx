@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Film, Play, Sparkles, Video, Tv, Zap, Clock, Layers, Download, Loader2 } from "lucide-react";
+import { Film, Play, Sparkles, Video, Tv, Zap, Clock, Layers, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Navbar from "@/components/Navbar";
+import CategoryNavbar from "@/components/CategoryNavbar";
 import Footer from "@/components/sections/Footer";
 import ProductGallery from "@/components/ProductGallery";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
@@ -36,8 +35,8 @@ const AfterEffects = () => {
   const galleryItems = images.length > 0 ? images : fallbackItems;
 
   return (
-    <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Navbar />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <CategoryNavbar />
       
       {/* Hero Section */}
       <section className="pt-24 pb-16 relative overflow-hidden">
@@ -45,12 +44,6 @@ const AfterEffects = () => {
         <div className="absolute inset-0 grid-pattern opacity-5" />
         
         <div className="section-container relative z-10">
-          <Link to="/#categories">
-            <Button variant="ghost" className="mb-6 gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Quay lại
-            </Button>
-          </Link>
           
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -233,7 +226,7 @@ const AfterEffects = () => {
       </section>
 
       <Footer />
-    </main>
+    </div>
   );
 };
 

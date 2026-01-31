@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Video, Zap, Monitor, Sun, Move, Phone, Mail, CheckCircle, Play, Loader2 } from "lucide-react";
+import { Video, Zap, Monitor, Sun, Move, Phone, Mail, CheckCircle, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import ProductGallery from "@/components/ProductGallery";
+import CategoryNavbar from "@/components/CategoryNavbar";
+import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setTalkshow from "@/assets/set-talkshow.jpg";
 
@@ -43,19 +44,15 @@ const Studio3D = () => {
   const galleryItems = images.length > 0 ? images : fallbackImages;
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
+      <CategoryNavbar />
+      
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
         <div className="absolute inset-0 grid-pattern opacity-5" />
         
         <div className="section-container relative z-10">
-          <Link to="/">
-            <Button variant="ghost" className="mb-8 gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Quay lại trang chủ
-            </Button>
-          </Link>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -277,7 +274,9 @@ const Studio3D = () => {
           </motion.div>
         </div>
       </section>
-    </main>
+
+      <Footer />
+    </div>
   );
 };
 
