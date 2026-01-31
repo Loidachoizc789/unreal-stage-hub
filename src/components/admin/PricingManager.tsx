@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Plus, Trash2, Save, GripVertical, X } from "lucide-react";
+import { Plus, Trash2, Save, GripVertical, X, RotateCcw } from "lucide-react";
+import { getFallbackPricing } from "@/data/fallbackPricing";
 
 interface PriceItem {
   label: string;
@@ -33,6 +34,7 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
   const [excludes, setExcludes] = useState<string[]>([]);
   const [newInclude, setNewInclude] = useState("");
   const [newExclude, setNewExclude] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Fetch existing pricing data
   const { data: existingPricing, isLoading: pricingLoading } = useQuery({
@@ -55,14 +57,18 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
         .from("category_pricing_notes")
         .select("*")
         .eq("category_slug", categorySlug)
-        .single();
-      if (error && error.code !== "PGRST116") throw error;
+        .maybeSingle();
+      if (error) throw error;
       return data;
     },
   });
 
+  // Load data: prioritize database, fallback to default pricing
   useEffect(() => {
-    if (existingPricing) {
+    if (pricingLoading || notesLoading) return;
+
+    if (existingPricing && existingPricing.length > 0) {
+      // Load from database
       setServices(
         existingPricing.map((p) => ({
           id: p.id,
@@ -71,8 +77,22 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
           display_order: p.display_order,
         }))
       );
+    } else {
+      // Load fallback pricing for this category
+      const fallback = getFallbackPricing(categorySlug);
+      if (fallback) {
+        setServices(
+          fallback.services.map((s, index) => ({
+            service_name: s.name,
+            items: s.items,
+            display_order: index,
+          }))
+        );
+        setIncludes(fallback.includes || []);
+        setExcludes(fallback.excludes || []);
+      }
     }
-  }, [existingPricing]);
+  }, [existingPricing, pricingLoading, notesLoading, categorySlug]);
 
   useEffect(() => {
     if (existingNotes) {
@@ -140,28 +160,34 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
         display_order: services.length,
       },
     ]);
+    setHasUnsavedChanges(true);
   };
 
   const removeService = (index: number) => {
+    if (!confirm("Bạn có chắc muốn xóa nhóm dịch vụ này?")) return;
     setServices(services.filter((_, i) => i !== index));
+    setHasUnsavedChanges(true);
   };
 
   const updateServiceName = (index: number, name: string) => {
     const updated = [...services];
     updated[index].service_name = name;
     setServices(updated);
+    setHasUnsavedChanges(true);
   };
 
   const addPriceItem = (serviceIndex: number) => {
     const updated = [...services];
     updated[serviceIndex].items.push({ label: "Dịch vụ mới", price: "Liên hệ" });
     setServices(updated);
+    setHasUnsavedChanges(true);
   };
 
   const removePriceItem = (serviceIndex: number, itemIndex: number) => {
     const updated = [...services];
     updated[serviceIndex].items = updated[serviceIndex].items.filter((_, i) => i !== itemIndex);
     setServices(updated);
+    setHasUnsavedChanges(true);
   };
 
   const updatePriceItem = (
@@ -173,12 +199,14 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
     const updated = [...services];
     updated[serviceIndex].items[itemIndex][field] = value;
     setServices(updated);
+    setHasUnsavedChanges(true);
   };
 
   const addInclude = () => {
     if (newInclude.trim()) {
       setIncludes([...includes, newInclude.trim()]);
       setNewInclude("");
+      setHasUnsavedChanges(true);
     }
   };
 
@@ -186,6 +214,43 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
     if (newExclude.trim()) {
       setExcludes([...excludes, newExclude.trim()]);
       setNewExclude("");
+      setHasUnsavedChanges(true);
+    }
+  };
+
+  const resetToFallback = () => {
+    if (!confirm("Bạn có chắc muốn khôi phục về bảng giá mặc định? Tất cả thay đổi chưa lưu sẽ mất.")) return;
+    const fallback = getFallbackPricing(categorySlug);
+    if (fallback) {
+      setServices(
+        fallback.services.map((s, index) => ({
+          service_name: s.name,
+          items: s.items,
+          display_order: index,
+        }))
+      );
+      setIncludes(fallback.includes || []);
+      setExcludes(fallback.excludes || []);
+      setHasUnsavedChanges(true);
+    }
+  };
+
+  const deleteAllPricing = async () => {
+    if (!confirm("Bạn có chắc muốn XÓA TOÀN BỘ bảng giá của danh mục này?")) return;
+    
+    try {
+      await supabase.from("category_pricing").delete().eq("category_slug", categorySlug);
+      await supabase.from("category_pricing_notes").delete().eq("category_slug", categorySlug);
+      
+      queryClient.invalidateQueries({ queryKey: ["category-pricing", categorySlug] });
+      queryClient.invalidateQueries({ queryKey: ["category-pricing-notes", categorySlug] });
+      queryClient.invalidateQueries({ queryKey: ["admin-category-pricing", categorySlug] });
+      queryClient.invalidateQueries({ queryKey: ["admin-category-pricing-notes", categorySlug] });
+      
+      toast.success("Đã xóa bảng giá!");
+      onClose();
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 
@@ -197,7 +262,12 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-background rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-xl font-bold">Quản lý bảng giá: {categoryName}</h2>
+          <div>
+            <h2 className="text-xl font-bold">Quản lý bảng giá: {categoryName}</h2>
+            {hasUnsavedChanges && (
+              <span className="text-sm text-primary">• Có thay đổi chưa lưu</span>
+            )}
+          </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
@@ -208,10 +278,16 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Nhóm dịch vụ</h3>
-              <Button onClick={addService} size="sm" variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Thêm nhóm
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={resetToFallback} size="sm" variant="ghost" className="text-muted-foreground">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Khôi phục mặc định
+                </Button>
+                <Button onClick={addService} size="sm" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Thêm nhóm
+                </Button>
+              </div>
             </div>
 
             {services.map((service, serviceIndex) => (
@@ -288,7 +364,7 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
                   className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
                 >
                   {item}
-                  <button onClick={() => setIncludes(includes.filter((_, i) => i !== index))}>
+                  <button onClick={() => { setIncludes(includes.filter((_, i) => i !== index)); setHasUnsavedChanges(true); }}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -317,7 +393,7 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
                   className="inline-flex items-center gap-1 px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm"
                 >
                   {item}
-                  <button onClick={() => setExcludes(excludes.filter((_, i) => i !== index))}>
+                  <button onClick={() => { setExcludes(excludes.filter((_, i) => i !== index)); setHasUnsavedChanges(true); }}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -337,14 +413,20 @@ const PricingManager = ({ categorySlug, categoryName, onClose }: PricingManagerP
           </div>
         </div>
 
-        <div className="p-4 border-t flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>
-            Hủy
+        <div className="p-4 border-t flex justify-between">
+          <Button variant="destructive" onClick={deleteAllPricing} className="gap-2">
+            <Trash2 className="w-4 h-4" />
+            Xóa toàn bộ
           </Button>
-          <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
-            <Save className="w-4 h-4 mr-2" />
-            {saveMutation.isPending ? "Đang lưu..." : "Lưu bảng giá"}
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={onClose}>
+              Hủy
+            </Button>
+            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+              <Save className="w-4 h-4 mr-2" />
+              {saveMutation.isPending ? "Đang lưu..." : "Lưu bảng giá"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
