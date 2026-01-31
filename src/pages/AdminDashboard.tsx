@@ -244,6 +244,20 @@ const AdminDashboard = () => {
           </Button>
         </div>
 
+        {/* Help Guide */}
+        <Card className="mb-8 border-primary/20 bg-primary/5">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-primary mb-2">📌 Hướng dẫn sử dụng</h3>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• Ảnh hiển thị trên website được quản lý hoàn toàn tại đây.</li>
+              <li>• Sau khi thêm/sửa/xoá, hệ thống sẽ tự động cập nhật ra website.</li>
+              <li>• <strong>Quan trọng:</strong> Danh mục ảnh phải trùng với slug trang (không dấu, viết thường, có gạch ngang).</li>
+              <li>• Ví dụ: Trang <code className="bg-muted px-1 rounded">/thiet-ke-2d</code> → Danh mục: <code className="bg-muted px-1 rounded">thiet-ke-2d</code></li>
+              <li>• Nếu chưa thấy thay đổi, hãy tải lại trang (Ctrl + F5) hoặc kiểm tra danh mục đã đúng chưa.</li>
+            </ul>
+          </CardContent>
+        </Card>
+
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
