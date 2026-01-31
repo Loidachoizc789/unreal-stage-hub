@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Home, Building2, Sun, Layers, Monitor, Move, Zap, Download, Loader2 } from "lucide-react";
+import { Home, Building2, Sun, Layers, Monitor, Move, Zap, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductGallery from "@/components/ProductGallery";
-import Navbar from "@/components/Navbar";
+import CategoryNavbar from "@/components/CategoryNavbar";
 import Footer from "@/components/sections/Footer";
 import { useCategoryImages } from "@/hooks/useCategoryImages";
 import setNews from "@/assets/set-news.jpg";
@@ -85,7 +85,7 @@ const InteriorExterior = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <CategoryNavbar />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 relative overflow-hidden">
@@ -93,12 +93,6 @@ const InteriorExterior = () => {
         <div className="absolute inset-0 grid-pattern opacity-5" />
 
         <div className="section-container relative z-10">
-          <Button variant="ghost" asChild className="mb-8">
-            <Link to="/" className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Về trang chủ
-            </Link>
-          </Button>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
