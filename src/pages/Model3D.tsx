@@ -259,7 +259,11 @@ const Model3D = () => {
       </section>
 
       {/* Pricing Section */}
-      <CategoryPricing services={pricingData.services} includes={pricingData.includes} />
+      <CategoryPricing 
+        categorySlug="model-3d"
+        fallbackServices={pricingData.services} 
+        fallbackIncludes={pricingData.includes} 
+      />
 
       <Footer />
     </div>

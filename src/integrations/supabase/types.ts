@@ -77,6 +77,63 @@ export type Database = {
         }
         Relationships: []
       }
+      category_pricing: {
+        Row: {
+          category_slug: string
+          created_at: string
+          display_order: number
+          id: string
+          items: Json
+          service_name: string
+          updated_at: string
+        }
+        Insert: {
+          category_slug: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          items?: Json
+          service_name: string
+          updated_at?: string
+        }
+        Update: {
+          category_slug?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          items?: Json
+          service_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      category_pricing_notes: {
+        Row: {
+          category_slug: string
+          created_at: string
+          excludes: string[] | null
+          id: string
+          includes: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category_slug: string
+          created_at?: string
+          excludes?: string[] | null
+          id?: string
+          includes?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category_slug?: string
+          created_at?: string
+          excludes?: string[] | null
+          id?: string
+          includes?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_media: {
         Row: {
           created_at: string

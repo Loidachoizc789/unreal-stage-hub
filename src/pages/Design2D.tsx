@@ -213,7 +213,10 @@ const Design2D = () => {
       </section>
 
       {/* Pricing Section */}
-      <CategoryPricing services={pricingData.services} />
+      <CategoryPricing 
+        categorySlug="thiet-ke-2d"
+        fallbackServices={pricingData.services} 
+      />
 
       {/* Contact CTA Section */}
       <section id="contact" className="py-24">

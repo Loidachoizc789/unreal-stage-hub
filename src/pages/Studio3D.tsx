@@ -262,9 +262,10 @@ const Studio3D = () => {
 
       {/* Pricing Section */}
       <CategoryPricing 
-        services={pricingData.services} 
-        includes={pricingData.includes} 
-        excludes={pricingData.excludes} 
+        categorySlug="phim-truong-3d"
+        fallbackServices={pricingData.services} 
+        fallbackIncludes={pricingData.includes} 
+        fallbackExcludes={pricingData.excludes} 
       />
 
       {/* Contact CTA Section */}

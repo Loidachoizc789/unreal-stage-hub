@@ -358,7 +358,10 @@ const InteriorExterior = () => {
       </section>
 
       {/* Pricing Section */}
-      <CategoryPricing services={pricingData.services} />
+      <CategoryPricing 
+        categorySlug="noi-ngoai-that"
+        fallbackServices={pricingData.services} 
+      />
 
       <Footer />
     </div>
