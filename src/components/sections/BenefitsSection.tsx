@@ -3,13 +3,19 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { 
   Wallet, 
-  Layers, 
-  Expand, 
-  Video, 
   Lightbulb,
   Repeat,
+  Expand,
+  Video, 
+  Layers,
   CheckCircle2 
 } from "lucide-react";
+
+const stats = [
+  { value: "80%", label: "Tiết kiệm chi phí" },
+  { value: "3x", label: "Nhanh hơn" },
+  { value: "100+", label: "Dự án" },
+];
 
 const benefits = [
   {
@@ -52,32 +58,52 @@ const BenefitsSection = () => {
     <section id="benefits" className="py-24 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 grid-pattern opacity-5" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
 
       <div className="section-container relative z-10">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-12"
         >
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
             Vì sao nên dùng{" "}
-            <span className="gradient-text">Hệ sinh thái 3D & 2D</span> này?
+            <span className="gradient-text">Hệ sinh thái 3D</span>
+            <br />
+            <span className="gradient-text">& 2D</span> này?
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground">
             Tối ưu quy trình sản xuất, nâng cao chất lượng nội dung với giải pháp virtual production toàn diện.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex flex-wrap justify-center gap-8 sm:gap-16 mb-16"
+        >
+          {stats.map((stat, index) => (
+            <div key={stat.label} className="text-center">
+              <div className="font-display text-4xl sm:text-5xl font-bold gradient-text mb-2">
+                {stat.value}
+              </div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Benefits Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
           {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.title}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+              initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="flex gap-4 glass-card p-6 card-hover group"
+              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+              className="glass-card p-6 card-hover group flex gap-4"
             >
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -85,11 +111,11 @@ const BenefitsSection = () => {
                 </div>
               </div>
               <div>
-                <h3 className="font-display text-lg font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary" />
+                <h3 className="font-display text-base font-semibold mb-1 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                   {benefit.title}
                 </h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
+                <p className="text-sm text-muted-foreground">{benefit.description}</p>
               </div>
             </motion.div>
           ))}
