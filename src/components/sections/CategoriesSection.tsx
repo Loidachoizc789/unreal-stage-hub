@@ -114,22 +114,22 @@ const CategoriesSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mb-12"
           >
-            <div className="relative flex items-center justify-center gap-4 lg:gap-8 overflow-hidden px-4">
-              {/* Previous Item - Blurred peek effect */}
+            <div className="relative flex items-center justify-center gap-4 lg:gap-8 overflow-visible px-4">
+              {/* Previous Item - Blurred peek effect - pushed far left */}
               <motion.div
                 key={`prev-${prevIndex}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 0.6, x: 0 }}
                 transition={{ duration: 0.5 }}
-                className="hidden lg:flex absolute left-4 xl:left-12 w-48 xl:w-64 h-64 xl:h-80 z-0 items-center"
+                className="hidden xl:flex absolute -left-8 2xl:-left-20 w-52 2xl:w-72 h-72 2xl:h-96 z-0 items-center"
               >
-                <div className="relative w-full h-full rounded-2xl overflow-hidden blur-[3px] scale-90 opacity-50">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden blur-[4px] scale-[0.85] opacity-40 hover:opacity-60 transition-opacity">
                   <img
                     src={categories[prevIndex].image}
                     alt={categories[prevIndex].title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
                 </div>
               </motion.div>
 
@@ -197,21 +197,21 @@ const CategoriesSection = () => {
                 </div>
               </div>
 
-              {/* Next Item - Blurred peek effect */}
+              {/* Next Item - Blurred peek effect - pushed far right */}
               <motion.div
                 key={`next-${nextIndex}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 0.6, x: 0 }}
                 transition={{ duration: 0.5 }}
-                className="hidden lg:flex absolute right-4 xl:right-12 w-48 xl:w-64 h-64 xl:h-80 z-0 items-center"
+                className="hidden xl:flex absolute -right-8 2xl:-right-20 w-52 2xl:w-72 h-72 2xl:h-96 z-0 items-center"
               >
-                <div className="relative w-full h-full rounded-2xl overflow-hidden blur-[3px] scale-90 opacity-50">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden blur-[4px] scale-[0.85] opacity-40 hover:opacity-60 transition-opacity">
                   <img
                     src={categories[nextIndex].image}
                     alt={categories[nextIndex].title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-l from-background via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-l from-background via-background/50 to-transparent" />
                 </div>
               </motion.div>
             </div>
