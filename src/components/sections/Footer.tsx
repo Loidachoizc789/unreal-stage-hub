@@ -1,17 +1,8 @@
-import { 
-  Facebook, 
-  Youtube, 
-  Instagram, 
-  Mail, 
-  Phone
-} from "lucide-react";
+import { Facebook, Youtube, Instagram, Mail, Phone } from "lucide-react";
 import ZaloIcon from "@/assets/zalo-icon.png";
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  return (
-    <footer id="contact" className="bg-card border-t border-border">
+  return <footer id="contact" className="bg-card border-t border-border">
       <div className="section-container py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
@@ -24,24 +15,13 @@ const Footer = () => {
               livestream, TV show, sự kiện và quảng cáo.
             </p>
             <div className="flex gap-4">
-              <a 
-                href="https://www.facebook.com/profile.php?id=61587057484656" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
+              <a href="https://www.facebook.com/profile.php?id=61587057484656" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
+              <a href="#" className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Youtube className="w-5 h-5" />
               </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
+              <a href="#" className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -91,10 +71,8 @@ const Footer = () => {
                 </a>
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
-                <img src={ZaloIcon} alt="Zalo" className="w-5 h-5" />
-                <a href="https://zalo.me/0862098408" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                  Zalo: 0862 098 408
-                </a>
+                <img alt="Zalo" className="w-5 h-5 border-primary" src="/lovable-uploads/c679bd4a-400c-4d8f-b57c-369c379226b0.png" />
+                <a href="https://zalo.me/0862098408" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">0862 098 408</a>
               </li>
             </ul>
           </div>
@@ -137,8 +115,6 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
