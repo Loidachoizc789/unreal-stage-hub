@@ -15,12 +15,13 @@ interface Category {
   display_order: number;
 }
 
-const CATEGORIES = [
-  { slug: "thiet-ke-2d", name: "Thiết Kế 2D" },
-  { slug: "phim-truong-3d", name: "Phim Trường 3D" },
-  { slug: "model-3d", name: "Model 3D" },
-  { slug: "noi-ngoai-that", name: "Nội Ngoại Thất" },
-  { slug: "after-effects", name: "After Effects" },
+// Only 5 main categories matching the homepage
+const MAIN_CATEGORY_SLUGS = [
+  "phim-truong-3d",
+  "thiet-ke-2d", 
+  "model-3d",
+  "noi-ngoai-that",
+  "after-effects",
 ];
 
 const AdminHomepageManager = () => {
@@ -39,6 +40,7 @@ const AdminHomepageManager = () => {
       const { data, error } = await supabase
         .from("categories")
         .select("*")
+        .in("slug", MAIN_CATEGORY_SLUGS)
         .order("display_order", { ascending: true });
 
       if (error) throw error;
@@ -49,7 +51,12 @@ const AdminHomepageManager = () => {
         return;
       }
       
-      setCategories(data);
+      // Sort by the order defined in MAIN_CATEGORY_SLUGS
+      const sortedData = [...data].sort((a, b) => {
+        return MAIN_CATEGORY_SLUGS.indexOf(a.slug) - MAIN_CATEGORY_SLUGS.indexOf(b.slug);
+      });
+      
+      setCategories(sortedData);
     } catch (err) {
       console.error("Error fetching categories:", err);
       toast({
@@ -64,16 +71,20 @@ const AdminHomepageManager = () => {
 
   const createDefaultCategories = async () => {
     try {
-      const defaultCategories = CATEGORIES.map((cat, index) => ({
-        name: cat.name,
-        slug: cat.slug,
-        description: null,
-        home_image_url: null,
-        display_order: index,
-      }));
+      const defaultCategories = [
+        { name: "Thiết Kế 3D", slug: "phim-truong-3d", description: "Talkshow, Livestream bán hàng, TV show, Event – sân khấu ảo, Showroom ảo", display_order: 1 },
+        { name: "Thiết Kế 2D", slug: "thiet-ke-2d", description: "Key visual chương trình, Backdrop sự kiện, Visual livestream, Layout màn LED, POSM", display_order: 2 },
+        { name: "Model 3D / Asset", slug: "model-3d", description: "Props sân khấu, Nội thất 3D, Background modular, Asset tối ưu UE5 / Blender", display_order: 3 },
+        { name: "Nội Ngoại Thất", slug: "noi-ngoai-that", description: "Render 3D nội thất căn hộ, biệt thự, văn phòng và phối cảnh ngoại thất mặt tiền", display_order: 4 },
+        { name: "After Effects", slug: "after-effects", description: "Motion logo, video quảng cáo, template AE, gói livestream visual, lower third", display_order: 5 },
+      ];
 
-      const { error } = await supabase.from("categories").insert(defaultCategories);
-      if (error) throw error;
+      // Upsert to avoid duplicates
+      for (const cat of defaultCategories) {
+        await supabase
+          .from("categories")
+          .upsert(cat, { onConflict: "slug" });
+      }
       
       fetchCategories();
     } catch (err) {

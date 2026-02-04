@@ -1,17 +1,29 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ArrowRight, Video, Palette, Box, Home, Film, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import setTalkshow from "@/assets/set-talkshow.jpg";
 import setLivestream from "@/assets/set-livestream.jpg";
 import setEvent from "@/assets/set-event.jpg";
 import setNews from "@/assets/set-news.jpg";
 
-const categories = [
+// Default images fallback
+const defaultImages: Record<string, string> = {
+  "phim-truong-3d": setTalkshow,
+  "thiet-ke-2d": setEvent,
+  "model-3d": setLivestream,
+  "noi-ngoai-that": setNews,
+  "after-effects": setTalkshow,
+};
+
+// 5 main categories matching the homepage design
+const defaultCategories = [
   {
     id: "3d-studios",
+    slug: "phim-truong-3d",
     category: "VIRTUAL PRODUCTION",
     title: "Thiết Kế 3D",
     description: "Talkshow, Livestream bán hàng, TV show, Event – sân khấu ảo, Showroom ảo",
@@ -22,6 +34,7 @@ const categories = [
   },
   {
     id: "2d-design",
+    slug: "thiet-ke-2d",
     category: "BRANDING & VISUAL",
     title: "Thiết Kế 2D",
     description: "Key visual chương trình, Backdrop sự kiện, Visual livestream, Layout màn LED, POSM",
@@ -32,6 +45,7 @@ const categories = [
   },
   {
     id: "3d-models",
+    slug: "model-3d",
     category: "PROPS & ENVIRONMENT",
     title: "Model 3D / Asset",
     description: "Props sân khấu, Nội thất 3D, Background modular, Asset tối ưu UE5 / Blender",
@@ -42,6 +56,7 @@ const categories = [
   },
   {
     id: "interior-exterior",
+    slug: "noi-ngoai-that",
     category: "ARCHITECTURAL VIZ",
     title: "Nội Ngoại Thất",
     description: "Render 3D nội thất căn hộ, biệt thự, văn phòng và phối cảnh ngoại thất mặt tiền",
@@ -52,6 +67,7 @@ const categories = [
   },
   {
     id: "motion-graphics",
+    slug: "after-effects",
     category: "AFTER EFFECTS",
     title: "After Effects",
     description: "Motion logo, video quảng cáo, template AE, gói livestream visual, lower third",
@@ -67,6 +83,49 @@ const CategoriesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isGridView, setIsGridView] = useState(false);
+  const [categories, setCategories] = useState(defaultCategories);
+
+  // Fetch category images from database
+  useEffect(() => {
+    const fetchCategoryImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("categories")
+          .select("slug, home_image_url, description")
+          .in("slug", ["phim-truong-3d", "thiet-ke-2d", "model-3d", "noi-ngoai-that", "after-effects"]);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          // Create a map of slug -> image_url
+          const imageMap: Record<string, string> = {};
+          const descMap: Record<string, string> = {};
+          
+          data.forEach((cat) => {
+            if (cat.home_image_url) {
+              imageMap[cat.slug] = cat.home_image_url;
+            }
+            if (cat.description) {
+              descMap[cat.slug] = cat.description;
+            }
+          });
+
+          // Update categories with database images
+          setCategories((prev) =>
+            prev.map((cat) => ({
+              ...cat,
+              image: imageMap[cat.slug] || defaultImages[cat.slug] || cat.image,
+              description: descMap[cat.slug] || cat.description,
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching category images:", err);
+      }
+    };
+
+    fetchCategoryImages();
+  }, []);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % categories.length);
